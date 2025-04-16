@@ -158,9 +158,13 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "sheiktestforproject7@gmail.com"
 EMAIL_HOST_PASSWORD = "xkagqdrelnapjnyk"
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://frontend-tfqc.onrender.com',
+]
 
-
-CORS_ALLOW_ALL_ORIGINS = True  # Allow frontend to make requests
+CORS_ALLOWED_ORIGINS = [
+    'https://frontend-tfqc.onrender.com',
+]
 
 
 
