@@ -16,8 +16,14 @@ from .serializers import (
     ProfileUpdateSerializer
 )
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 User = get_user_model()
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
     def post(self, request):
         print(request.data)
@@ -27,6 +33,9 @@ class RegisterView(APIView):
             return Response({"message": "User registered successfully. Check your email to verify your account."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class VerifyEmailView(APIView):
     def get(self, request, token):
         try:
@@ -42,7 +51,8 @@ class VerifyEmailView(APIView):
         except Exception as e:
             return Response({"error": "Invalid or expired token", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-        
+
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     def post(self, request):
         print(request.data)
@@ -55,6 +65,9 @@ class LoginView(APIView):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -72,6 +85,8 @@ class LogoutView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+@method_decorator(csrf_exempt, name='dispatch')
 class ForgotPasswordView(APIView):
     
     def post(self, request):
@@ -84,6 +99,9 @@ class ForgotPasswordView(APIView):
             return Response({"message": "Check your email for the reset link"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class ResetPasswordView(APIView):
     
     def post(self, request, token):
@@ -101,6 +119,9 @@ class ResetPasswordView(APIView):
                 return Response({"error": "Invalid token", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class ProfileUpdateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -114,7 +135,8 @@ class ProfileUpdateView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
+
+@method_decorator(csrf_exempt, name='dispatch')
 class ProfileView(APIView):
     # permission_classes = [permissions.IsAuthenticated]
 
