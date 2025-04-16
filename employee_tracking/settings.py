@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -170,6 +171,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://frontend-tfqc.onrender.com',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 
 
 REST_FRAMEWORK = {
