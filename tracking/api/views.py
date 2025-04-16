@@ -12,7 +12,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import WorkLog,Review
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class WorkLogListCreateView(generics.ListCreateAPIView):
     serializer_class = WorkLogSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -27,6 +32,9 @@ class WorkLogListCreateView(generics.ListCreateAPIView):
 
         serializer.save(employee=employee)
 
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class WorkLogUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = WorkLogSerializer
     permission_classes = [permissions.IsAuthenticated, TaskUserOrReadOnly]
@@ -41,6 +49,8 @@ class WorkLogUpdateView(generics.RetrieveUpdateAPIView):
         serializer.save()
 
 
+
+@method_decorator(csrf_exempt, name='dispatch')
 class DashboardStatsAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -71,6 +81,8 @@ class DashboardStatsAPIView(APIView):
         )
 
 
+
+@method_decorator(csrf_exempt, name='dispatch')
 class ReviewListCreateView(generics.ListCreateAPIView):
     queryset = Review.objects.all().order_by('-created_at')
     serializer_class = ReviewSerializer
