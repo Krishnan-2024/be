@@ -139,7 +139,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 MEDIA_ROOT = BASE_DIR/"uploads"
-MEDIA_URl = "/media/"
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -170,6 +170,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOWED_ORIGINS = [
     'https://frontend-tfqc.onrender.com',
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
