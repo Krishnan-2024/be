@@ -12,23 +12,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+from datetime import timedelta
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i4r0+2(1fw3$)k@d%n(=v9dtqetnren-8f9j+*bj59n!*9^8+h'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
-
-
-# Application definition
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-i4r0+2(1fw3$)k@d%n(=v9dtqetnren-8f9j+*bj59n!*9^8+h')
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
+ALLOWED_HOSTS = ["*"] if DEBUG else os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -38,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
     'user_auth',
     'tracking',
     'rest_framework',
@@ -49,17 +38,12 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-
-    # 👇 Insert this before CsrfViewMiddleware
     'user_auth.middlewares.DisableCSRFMiddleware',
-
     'django.middleware.csrf.CsrfViewMiddleware',
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -85,10 +69,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'employee_tracking.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -96,58 +76,27 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 AUTH_USER_MODEL = 'user_auth.User'
-
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
-MEDIA_ROOT = BASE_DIR/"uploads"
-MEDIA_URl = "/media/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+MEDIA_ROOT = BASE_DIR / "uploads"
+MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# JWT Settings
-from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
@@ -155,39 +104,35 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# Email Configuration (Use real SMTP settings)
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "sheiktestforproject7@gmail.com"
-EMAIL_HOST_PASSWORD = "xkagqdrelnapjnyk"
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER", "sheiktestforproject7@gmail.com")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD", "xkagqdrelnapjnyk")
 
 CSRF_TRUSTED_ORIGINS = [
     'https://frontend-tfqc.onrender.com',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'https://frontend-tfqc.onrender.com',
-]
-
 CORS_ALLOW_CREDENTIALS = True
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://frontend-tfqc.onrender.com",
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
-
-# Custom Admin Settings
 JAZZMIN_SETTINGS = {
     "site_title": "Employee Tracking",
     "site_header": "Dashboard",
     "site_brand": "Modern Marketplace ",
-    # "site_icon": "images/favicon.ico",
-    # "site_logo": "images/logos/logo.jpg",
     "welcome_sign": "Welcome To syrma-technology",
     "copyright": "Syrma Technology",
     "user_avatar": "images/photos/logo.jpg",
@@ -207,35 +152,27 @@ JAZZMIN_SETTINGS = {
     ],
     "icons": {
         "admin.LogEntry": "fas fa-file",
-
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
-
         "api.User": "fas fa-user",
-        "api.Profile":"fas fa-address-card",
-        "api.Post":"fas fa-th",
-        "api.Category":"fas fa-tag",
-        "api.Comment":"fas fa-envelope",
-        "api.Notification":"fas fa-bell",
-        "api.Bookmark":"fas fa-heart",
-
-        
+        "api.Profile": "fas fa-address-card",
+        "api.Post": "fas fa-th",
+        "api.Category": "fas fa-tag",
+        "api.Comment": "fas fa-envelope",
+        "api.Notification": "fas fa-bell",
+        "api.Bookmark": "fas fa-heart",
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-arrow-circle-right",
     "related_modal_active": False,
-    
     "custom_js": None,
     "show_ui_builder": True,
-    
     "changeform_format": "horizontal_tabs",
     "changeform_format_overrides": {
         "auth.user": "collapsible",
         "auth.group": "vertical_tabs",
     },
 }
-
-# Jazzmin Tweaks
 
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
